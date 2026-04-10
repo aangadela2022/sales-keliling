@@ -46,9 +46,10 @@
         <div class="form-card">
             <h3>Filter Laporan</h3>
             <div class="filter-section">
-                <select id="filterCustomer" class="form-control" onchange="loadSalesReport()">
+                <select id="filterCustomer" class="form-control" style="flex: 1;" onchange="loadSalesReport()">
                     <option value="">-- Semua Pelanggan --</option>
                 </select>
+                <button class="btn btn-primary" onclick="downloadExcel()" style="white-space: nowrap;">📥 Download Excel</button>
             </div>
         </div>
 

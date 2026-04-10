@@ -62,3 +62,21 @@ function loadSalesReport() {
         tbody.appendChild(tr);
     });
 }
+
+function downloadExcel() {
+    const table = document.getElementById("salesReportTable");
+    const html = table.outerHTML;
+    
+    // Gunakan pendekatan Data URI standar untuk format Excel lama (XLS yang didukung secara natif)
+    const uri = 'data:application/vnd.ms-excel;base64,';
+    const template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body>{table}</body></html>';
+    const base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) };
+    const format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) };
+    
+    const ctx = { worksheet: 'Laporan Penjualan', table: html };
+    
+    const link = document.createElement("a");
+    link.download = "Laporan_Penjualan.xls";
+    link.href = uri + base64(format(template, ctx));
+    link.click();
+}
