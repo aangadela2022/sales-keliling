@@ -79,14 +79,17 @@
             const configText = document.getElementById('firebaseConfig').value;
             
             try {
-                // Evaluasi teks (bisa json ketat atau format object js)
                 let configObj;
                 try {
+                    // Coba parsing JSON ketat dulu
                     configObj = JSON.parse(configText);
                 } catch {
-                    // Coba parsing jika di-copy raw JS object
-                    const stringToJSON = configText.replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2": ').replace(/'/g, '"');
-                    configObj = JSON.parse(stringToJSON);
+                    // Jika gagal, gunakan native JS engine untuk memecahkan objek js mentah (lebih tangguh)
+                    const match = configText.match(/\{[\s\S]*\}/);
+                    if (!match) throw new Error("Tidak menemukan kurung kurawal pembuka/penutup objek Firebase");
+                    
+                    // Eksekusi string objek secara aman sebagai javascript runtime
+                    configObj = (new Function('return ' + match[0]))();
                 }
                 
                 if (!configObj || !configObj.apiKey || !configObj.projectId) {
