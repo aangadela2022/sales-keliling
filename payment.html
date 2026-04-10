@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembayaran - Sales Keliling</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .order-card {
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: var(--secondary-color);
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="app-header">
+        <button class="nav-toggle" onclick="toggleSidebar()">☰</button>
+        <h1>Pembayaran</h1>
+        <div style="width: 30px;"></div>
+    </header>
+
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="close-btn" onclick="toggleSidebar()">×</a>
+        <a href="index.html">Dashboard & Profil</a>
+        <a href="customers.html">Pelanggan</a>
+        <a href="map.html">Peta Kunjungan</a>
+        <a href="suppliers.html">Suplier</a>
+        <a href="products.html">Produk</a>
+        <a href="purchases.html">Pembelian</a>
+        <a href="order.html">Order</a>
+        <a href="payment.html" class="active">Pembayaran</a>
+        <a href="debt.html">Rekap Hutang</a>
+        <a href="sales_report.html">Laporan Penjualan</a>
+        <a href="ranking.html">Ranking Pelanggan</a>
+        <a href="chart.html">Grafik Penjualan</a>
+        <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px;"></div>
+        <a href="#" onclick="logout()" style="color: #ea4335; font-weight: bold;">🚪 Logout</a>
+    </div>
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <main class="main-content">
+        <div class="form-card">
+            <h3>Pilih Customer</h3>
+            <div class="form-group">
+                <select id="searchCustomer" class="form-control" onchange="if(this.value) selectCustomer(this.value); else { document.getElementById('paymentArea').style.display = 'none'; }">
+                    <option value="">-- Pilih Customer --</option>
+                </select>
+            </div>
+            
+            <div id="paymentArea" style="display:none; margin-top:20px;">
+                <h4 style="border-bottom: 2px solid var(--primary-color); padding-bottom:5px;">
+                    Order Belum Lunas: <span id="paymentCustomerName" style="color:var(--primary-color);"></span>
+                </h4>
+                
+                <form id="paymentForm">
+                    <div id="unpaidOrdersList">
+                        <!-- Populated by JS -->
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <h3>Hari Ini: Data Pembayaran</h3>
+            <table id="paymentTable">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Tanggal Bayar</th>
+                        <th>Customer</th>
+                        <th>Produk</th>
+                        <th>Qty(Retur)</th>
+                        <th>Total Bayar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="js/firebase-sync.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/payment.js"></script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order - Sales Keliling</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <button class="nav-toggle" onclick="toggleSidebar()">☰</button>
+        <h1>Catat Order</h1>
+        <div style="width: 30px;"></div>
+    </header>
+
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="close-btn" onclick="toggleSidebar()">×</a>
+        <a href="index.html">Dashboard & Profil</a>
+        <a href="customers.html">Pelanggan</a>
+        <a href="map.html">Peta Kunjungan</a>
+        <a href="suppliers.html">Suplier</a>
+        <a href="products.html">Produk</a>
+        <a href="purchases.html">Pembelian</a>
+        <a href="order.html" class="active">Order</a>
+        <a href="payment.html">Pembayaran</a>
+        <a href="debt.html">Rekap Hutang</a>
+        <a href="sales_report.html">Laporan Penjualan</a>
+        <a href="ranking.html">Ranking Pelanggan</a>
+        <a href="chart.html">Grafik Penjualan</a>
+        <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px;"></div>
+        <a href="#" onclick="logout()" style="color: #ea4335; font-weight: bold;">🚪 Logout</a>
+    </div>
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <main class="main-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0;">Data Order</h2>
+            <button class="btn btn-success" style="width: auto; margin: 0;" onclick="toggleForm('orderFormCard')">+ Buat Order Baru</button>
+        </div>
+
+        <div class="form-card" id="orderFormCard" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-bottom: 15px;">
+                <h3 style="margin: 0;">Form Order Baru</h3>
+                <button type="button" class="btn" style="width: auto; margin: 0; padding: 5px 10px; background-color: var(--secondary-color); border-color: var(--border-color); color: var(--text-color);" onclick="toggleForm('orderFormCard')">Tutup</button>
+            </div>
+            
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="orderDateDisplay">Tanggal</label>
+                    <input type="text" id="orderDateDisplay" class="form-control" readonly style="background-color: #e9ecef; font-weight: bold;">
+                    <input type="hidden" id="orderDate">
+                </div>
+                <div class="form-group">
+                    <label for="orderCustomer">Customer *</label>
+                    <select id="orderCustomer" class="form-control" required>
+                        <option value="">-- Pilih Customer --</option>
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                
+                <!-- Product Selection Area -->
+                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px;">
+                    <h4 style="margin-top: 0; margin-bottom: 10px;">Tambah Item</h4>
+                    <div class="form-group">
+                        <label for="orderProduct">Produk</label>
+                        <select id="orderProduct" class="form-control">
+                            <option value="">-- Pilih Produk --</option>
+                            <!-- Populated by JS -->
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="form-group" style="flex: 2;">
+                            <label>Harga Satuan</label>
+                            <input type="text" id="orderPriceDisplay" class="form-control" readonly style="background-color: #e9ecef;">
+                            <input type="hidden" id="orderPriceValue">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="orderQty">Qty</label>
+                            <input type="number" id="orderQty" class="form-control" min="1">
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn btn-primary" id="btnAddItem" onclick="addItemToCart()" style="margin-bottom: 0;">+ Tambah ke Keranjang</button>
+                </div>
+
+                <!-- Cart Table -->
+                <div class="table-responsive" style="margin-bottom: 15px; box-shadow: none; border: 1px solid #ddd;">
+                    <table id="cartTable" style="margin-bottom: 0;">
+                        <thead>
+                            <tr>
+                                <th>Produk</th>
+                                <th>Harga</th>
+                                <th>Qty</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cartTableBody">
+                            <tr id="emptyCartRow"><td colspan="4" style="text-align:center; font-style:italic; color:#777;">Keranjang masih kosong</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="background-color: #e9ecef; padding: 15px; border-radius: 4px; margin-bottom: 15px; text-align:right;">
+                    <span style="font-size: 0.9em; color:#666;">Estimasi (Asli): Rp <span id="textTotalAsli">0</span></span><br>
+                    <strong style="font-size: 1.2em;">Total Pembulatan: <span id="textTotalBulat" style="color: var(--primary-color);">Rp 0</span></strong>
+                </div>
+
+                <button type="submit" class="btn btn-success" id="btnSaveOrder" style="font-weight: bold; font-size: 1.1rem; padding: 15px;">SIMPAN ORDER FINAL</button>
+            </form>
+        </div>
+            <form id="orderForm">
+                <!-- Removed single item product area as it's replaced by Cart UI -->
+
+        <div class="table-responsive">
+            <h3>Hari Ini: Data Order</h3>
+            <table id="orderTable">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Tanggal</th>
+                        <th>Customer</th>
+                        <th>Produk</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="js/firebase-sync.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/order.js"></script>
+</body>
+</html>

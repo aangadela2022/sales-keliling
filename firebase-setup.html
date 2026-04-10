@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Config Database - Sales Keliling</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: var(--bg-color);
+            margin: 0;
+        }
+        .config-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        .config-card h2 {
+            margin-bottom: 5px;
+            color: var(--primary-color);
+            text-align: center;
+        }
+        .config-card p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        textarea.form-control {
+            font-family: monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+        .error-msg {
+            color: var(--danger-color);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            display: none;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="config-card">
+        <h2>Setup Database Firebase</h2>
+        <p>Aplikasi ini menyimpan data secara lokal dan menyalinnya ke cloud. Masukkan konfigurasi JSON Firebase Anda.</p>
+        <div class="error-msg" id="errorMsg">Format konfigurasi JSON tidak valid!</div>
+        <form id="configForm">
+            <div class="form-group">
+                <label for="firebaseConfig">Firebase Config Object (JSON):</label>
+                <textarea id="firebaseConfig" class="form-control" rows="8" placeholder='{
+  "apiKey": "AIzaSy...",
+  "authDomain": "...",
+  "projectId": "...",
+  "storageBucket": "...",
+  "messagingSenderId": "...",
+  "appId": "..."
+}' required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Simpan Konfigurasi</button>
+            <button type="button" class="btn" style="background-color: var(--secondary-color); width: 100%; margin-top: 10px;" onclick="window.location.href='index.html'">Lanjutkan Tanpa Cloud (Local Only)</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('configForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const configText = document.getElementById('firebaseConfig').value;
+            
+            try {
+                // Evaluasi teks (bisa json ketat atau format object js)
+                let configObj;
+                try {
+                    configObj = JSON.parse(configText);
+                } catch {
+                    // Coba parsing jika di-copy raw JS object
+                    const stringToJSON = configText.replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2": ').replace(/'/g, '"');
+                    configObj = JSON.parse(stringToJSON);
+                }
+                
+                if (!configObj || !configObj.apiKey || !configObj.projectId) {
+                    throw new Error("Missing fields");
+                }
+                
+                localStorage.setItem('firebaseConfig', JSON.stringify(configObj));
+                alert("Konfigurasi berhasil disimpan!");
+                window.location.href = 'index.html';
+                
+            } catch (err) {
+                console.error(err);
+                document.getElementById('errorMsg').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

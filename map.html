@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Rute Kunjungan Toko - Sales Keliling</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        #map {
+            height: 70vh;
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-top: 10px;
+        }
+        .map-legend {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+        .color-red { background-color: #EA4335; }
+        .color-green { background-color: #34A853; }
+        .color-blue { background-color: #4285F4; } /* Untuk toko baru yang belum disimpan statusnya */
+    </style>
+</head>
+<body>
+
+    <header class="app-header">
+        <button class="nav-toggle" onclick="toggleSidebar()">☰</button>
+        <h1>Peta Kunjungan</h1>
+        <div style="width: 30px;"></div>
+    </header>
+
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="close-btn" onclick="toggleSidebar()">×</a>
+        <a href="index.html">Dashboard & Profil</a>
+        <a href="customers.html">Pelanggan</a>
+        <a href="map.html" class="active">Peta Kunjungan</a>
+        <a href="suppliers.html">Suplier</a>
+        <a href="products.html">Produk</a>
+        <a href="purchases.html">Pembelian</a>
+        <a href="order.html">Order</a>
+        <a href="payment.html">Pembayaran</a>
+        <a href="debt.html">Rekap Hutang</a>
+        <a href="sales_report.html">Laporan Penjualan</a>
+        <a href="ranking.html">Ranking Pelanggan</a>
+        <a href="chart.html">Grafik Penjualan</a>
+        <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px;"></div>
+        <a href="#" onclick="logout()" style="color: #ea4335; font-weight: bold;">🚪 Logout</a>
+    </div>
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <main class="main-content">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0;">Peta Rute Kunjungan Toko</h2>
+        </div>
+        <p style="margin-top: 5px; font-size: 0.9rem; color: var(--text-color);">
+            Klik titik koordinat di peta untuk mendaftarkan lokasi toko. Klik marker merah/hijau untuk menginput pesanan/penjualan.
+        </p>
+
+        <div class="map-legend">
+            <div class="legend-item"><div class="legend-color color-green"></div> Sudah dikunjungi (≤ 2 Hari)</div>
+            <div class="legend-item"><div class="legend-color color-red"></div> Perlu dikunjungi (> 2 Hari)</div>
+        </div>
+
+        <div id="map"></div>
+
+        <!-- Form Modal untuk Set Lokasi Toko Baru -->
+        <div class="form-card" id="locationFormCard" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 90%; max-width: 400px;">
+            <h3>Daftarkan Lokasi Toko</h3>
+            <p id="latLngDisplay" style="font-size: 0.8rem; color: #666; margin-bottom: 15px;"></p>
+            <form id="locationForm">
+                <input type="hidden" id="selectedLat">
+                <input type="hidden" id="selectedLng">
+                <div class="form-group">
+                    <label for="unmappedCustomer">Pilih Pelanggan / Toko *</label>
+                    <select id="unmappedCustomer" class="form-control" required>
+                        <option value="">-- Pilih Toko --</option>
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Simpan Lokasi</button>
+                <button type="button" class="btn" style="background-color: var(--secondary-color); width: 100%; margin-top: 10px;" onclick="closeLocationForm()">Batal</button>
+            </form>
+        </div>
+    </main>
+
+    <script src="js/firebase-sync.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+    
+    <!-- Load LEAFLET JS as a drop-in replacement for Google Maps to avoid API Key issues, 
+         using Google Streets map tiles for visual consistency. -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Map Logic -->
+    <script src="js/map.js"></script>
+</body>
+</html>

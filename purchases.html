@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembelian - Sales Keliling</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <button class="nav-toggle" onclick="toggleSidebar()">☰</button>
+        <h1>Catat Pembelian</h1>
+        <div style="width: 30px;"></div>
+    </header>
+
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="close-btn" onclick="toggleSidebar()">×</a>
+        <a href="index.html">Dashboard & Profil</a>
+        <a href="customers.html">Pelanggan</a>
+        <a href="map.html">Peta Kunjungan</a>
+        <a href="suppliers.html">Suplier</a>
+        <a href="products.html">Produk</a>
+        <a href="purchases.html" class="active">Pembelian</a>
+        <a href="order.html">Order</a>
+        <a href="payment.html">Pembayaran</a>
+        <a href="debt.html">Rekap Hutang</a>
+        <a href="sales_report.html">Laporan Penjualan</a>
+        <a href="ranking.html">Ranking Pelanggan</a>
+        <a href="chart.html">Grafik Penjualan</a>
+        <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px;"></div>
+        <a href="#" onclick="logout()" style="color: #ea4335; font-weight: bold;">🚪 Logout</a>
+    </div>
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <main class="main-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0;">Data Pembelian</h2>
+            <button class="btn btn-success" style="width: auto; margin: 0;" onclick="toggleForm('purchaseFormCard')">+ Catat Pembelian</button>
+        </div>
+
+        <div class="form-card" id="purchaseFormCard" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-bottom: 15px;">
+                <h3 style="margin: 0;">Form Pembelian Baru</h3>
+                <button type="button" class="btn" style="width: auto; margin: 0; padding: 5px 10px; background-color: var(--secondary-color); border-color: var(--border-color); color: var(--text-color);" onclick="toggleForm('purchaseFormCard')">Tutup</button>
+            </div>
+            
+            <form id="purchaseForm">
+                <div class="form-group">
+                    <label for="purchaseDateDisplay">Tanggal</label>
+                    <input type="text" id="purchaseDateDisplay" class="form-control" readonly style="background-color: #e9ecef; font-weight: bold;">
+                    <input type="hidden" id="purchaseDate">
+                </div>
+                <div class="form-group">
+                    <label for="purchaseSupplier">Suplier *</label>
+                    <select id="purchaseSupplier" class="form-control" required>
+                        <option value="">-- Pilih Suplier --</option>
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                
+                <!-- Product Selection Area -->
+                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px;">
+                    <h4 style="margin-top: 0; margin-bottom: 10px;">Tambah Item</h4>
+                    <div class="form-group">
+                        <label for="purchaseProduct">Produk</label>
+                        <select id="purchaseProduct" class="form-control">
+                            <option value="">-- Pilih Produk --</option>
+                            <!-- Populated by JS -->
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="form-group" style="flex: 2;">
+                            <label>Harga Beli</label>
+                            <input type="text" id="purchasePriceDisplay" class="form-control" readonly style="background-color: #e9ecef;">
+                            <input type="hidden" id="purchasePriceValue">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="purchaseQty">Qty</label>
+                            <input type="number" id="purchaseQty" class="form-control" min="1">
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn btn-primary" id="btnAddItem" onclick="addItemToCart()" style="margin-bottom: 0;">+ Tambah Item</button>
+                </div>
+
+                <!-- Cart Table -->
+                <div class="table-responsive" style="margin-bottom: 15px; box-shadow: none; border: 1px solid #ddd;">
+                    <table id="cartTable" style="margin-bottom: 0;">
+                        <thead>
+                            <tr>
+                                <th>Produk</th>
+                                <th>Harga Beli</th>
+                                <th>Qty</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cartTableBody">
+                            <tr id="emptyCartRow"><td colspan="4" style="text-align:center; font-style:italic; color:#777;">Daftar item masih kosong</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="background-color: #e9ecef; padding: 15px; border-radius: 4px; margin-bottom: 15px; text-align:right;">
+                    <strong style="font-size: 1.2em;">Total Pembelian: <span id="textTotalPembelian" style="color: var(--primary-color);">Rp 0</span></strong>
+                </div>
+
+                <button type="submit" class="btn btn-success" id="btnSavePurchase" style="font-weight: bold; font-size: 1.1rem; padding: 15px;">SIMPAN PEMBELIAN</button>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <h3>Riwayat Pembelian</h3>
+            <table id="purchaseTable">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Tanggal</th>
+                        <th>Suplier</th>
+                        <th>Produk</th>
+                        <th>Qty</th>
+                        <th>Harga Beli</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="js/firebase-sync.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/purchase.js"></script>
+</body>
+</html>

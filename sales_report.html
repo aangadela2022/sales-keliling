@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Penjualan - Sales Keliling</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .filter-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="app-header">
+        <button class="nav-toggle" onclick="toggleSidebar()">☰</button>
+        <h1>Laporan Penjualan</h1>
+        <div style="width: 30px;"></div>
+    </header>
+
+    <div id="mySidebar" class="sidebar">
+        <!-- Will be updated later down the line, but let's include all standard links + Laporan Penjualan -->
+        <a href="javascript:void(0)" class="close-btn" onclick="toggleSidebar()">×</a>
+        <a href="index.html">Dashboard & Profil</a>
+        <a href="customers.html">Pelanggan</a>
+        <a href="map.html">Peta Kunjungan</a>
+        <a href="suppliers.html">Suplier</a>
+        <a href="products.html">Produk</a>
+        <a href="purchases.html">Pembelian</a>
+        <a href="order.html">Order</a>
+        <a href="payment.html">Pembayaran</a>
+        <a href="debt.html">Rekap Hutang</a>
+        <a href="sales_report.html" class="active">Laporan Penjualan</a>
+        <a href="ranking.html">Ranking Pelanggan</a>
+        <a href="chart.html">Grafik Penjualan</a>
+        <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px;"></div>
+        <a href="#" onclick="logout()" style="color: #ea4335; font-weight: bold;">🚪 Logout</a>
+    </div>
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <main class="main-content">
+        <div class="form-card">
+            <h3>Filter Laporan</h3>
+            <div class="filter-section">
+                <select id="filterCustomer" class="form-control" onchange="loadSalesReport()">
+                    <option value="">-- Semua Pelanggan --</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <h3>Data Penjualan</h3>
+            <table id="salesReportTable">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Hari-Tanggal-Bulan-Tahun</th>
+                        <th>Nama Produk</th>
+                        <th>Jumlah</th>
+                        <th>Total Pembayaran</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="js/firebase-sync.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/sales_report.js"></script>
+</body>
+</html>

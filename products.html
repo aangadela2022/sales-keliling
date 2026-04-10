@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produk - Sales Keliling</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <button class="nav-toggle" onclick="toggleSidebar()">☰</button>
+        <h1>Daftar Produk</h1>
+        <div style="width: 30px;"></div>
+    </header>
+
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="close-btn" onclick="toggleSidebar()">×</a>
+        <a href="index.html">Dashboard & Profil</a>
+        <a href="customers.html">Pelanggan</a>
+        <a href="map.html">Peta Kunjungan</a>
+        <a href="suppliers.html">Suplier</a>
+        <a href="products.html" class="active">Produk</a>
+        <a href="purchases.html">Pembelian</a>
+        <a href="order.html">Order</a>
+        <a href="payment.html">Pembayaran</a>
+        <a href="debt.html">Rekap Hutang</a>
+        <a href="sales_report.html">Laporan Penjualan</a>
+        <a href="ranking.html">Ranking Pelanggan</a>
+        <a href="chart.html">Grafik Penjualan</a>
+        <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px;"></div>
+        <a href="#" onclick="logout()" style="color: #ea4335; font-weight: bold;">🚪 Logout</a>
+    </div>
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <main class="main-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0;">Data Produk</h2>
+            <button class="btn btn-success" style="width: auto; margin: 0;" onclick="toggleForm('productFormCard')">+ Tambah Produk</button>
+        </div>
+
+        <div class="form-card" id="productFormCard" style="display: none;">
+            <h3>Tambah Produk Baru</h3>
+            <form id="productForm">
+                <input type="hidden" id="productId">
+                <div class="form-group">
+                    <label for="prodName">Nama Produk *</label>
+                    <input type="text" id="prodName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="prodPrice">Harga Jual (Rp) *</label>
+                    <input type="number" id="prodPrice" class="form-control" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="prodBuyPrice">Harga Beli (Rp)</label>
+                    <input type="number" id="prodBuyPrice" class="form-control" min="0">
+                </div>
+                <button type="submit" class="btn btn-primary" id="btnSaveProduct">Simpan Produk</button>
+                <button type="button" class="btn" style="background-color: var(--secondary-color); border-color: var(--border-color); color: var(--text-color);" onclick="toggleForm('productFormCard')">Tutup</button>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <h3>Daftar Produk</h3>
+            <table id="productTable">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Produk</th>
+                        <th>Harga Beli</th>
+                        <th>Harga Jual</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="js/firebase-sync.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/product.js"></script>
+</body>
+</html>
