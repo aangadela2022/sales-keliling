@@ -81,15 +81,22 @@
             try {
                 let configObj;
                 try {
-                    // Coba parsing JSON ketat dulu
+                    // Coba parsing JSON murni
                     configObj = JSON.parse(configText);
                 } catch {
-                    // Jika gagal, gunakan native JS engine untuk memecahkan objek js mentah (lebih tangguh)
+                    // Jika gagal (karena format js mentah dari firebase), gunakan REGEX murni tanpa EVAL
                     const match = configText.match(/\{[\s\S]*\}/);
-                    if (!match) throw new Error("Tidak menemukan kurung kurawal pembuka/penutup objek Firebase");
+                    if (!match) throw new Error("Tidak menemukan kurung kurawal pembuka/penutup");
                     
-                    // Eksekusi string objek secara aman sebagai javascript runtime
-                    configObj = (new Function('return ' + match[0]))();
+                    let cleanText = match[0];
+                    // Tambahkan tanda kutip ganda ke Key yang belum dikuotasi
+                    cleanText = cleanText.replace(/([{,]\s*)([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
+                    // Ganti kutipan tunggal (single quote) ke double quote
+                    cleanText = cleanText.replace(/'/g, '"');
+                    // Buang tanda koma gantung di ujung (trailing comma) yang merusak JSON
+                    cleanText = cleanText.replace(/,\s*\}/g, '}');
+                    
+                    configObj = JSON.parse(cleanText);
                 }
                 
                 if (!configObj || !configObj.apiKey || !configObj.projectId) {
