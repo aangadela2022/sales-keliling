@@ -254,3 +254,19 @@ function closeDebtModal() {
     }
 }
 
+// Function to clear all transaction data (orders and payments)
+function clearTransactionData() {
+    const confirmClear = confirm("Peringatan: Tindakan ini akan menghapus semua data transaksi berikut:\n- Data Order\n- Data Pembayaran\n- Rekap Hutang\n- Laporan Penjualan\n- Riwayat Per Toko\n- Ranking Pelanggan & Grafik\n\nApakah Anda yakin ingin melanjutkan?");
+    
+    if (confirmClear) {
+        const doubleCheck = confirm("Apakah Anda benar-benar yakin? Semua data transaksi Anda akan dihapus permanen dari penyimpanan lokal (dan Firebase jika aktif). Tindakan ini tidak dapat dibatalkan.");
+        if (doubleCheck) {
+            saveData('orders', []);
+            saveData('payments', []);
+            alert("Semua data transaksi berhasil dibersihkan!");
+            window.location.reload();
+        }
+    }
+}
+
+
