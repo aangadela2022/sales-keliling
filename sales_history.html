@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Penjualan - Sales Keliling</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .filter-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        .filter-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        .filter-row .form-group {
+            flex: 1;
+            min-width: 140px;
+            margin-bottom: 0;
+        }
+        .summary-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .summary-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .summary-item .label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        .summary-item .val {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .summary-item .val.green { color: var(--success-color); }
+        .summary-item .val.red { color: var(--danger-color); }
+
+        .btn-export {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.15s, box-shadow 0.15s;
+            width: auto;
+            margin-bottom: 0;
+        }
+        .btn-export:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(40,167,69,0.35);
+        }
+        .btn-filter {
+            background: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            width: auto;
+            margin-bottom: 0;
+        }
+        .btn-reset {
+            background: #6c757d;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            width: auto;
+            margin-bottom: 0;
+        }
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .action-bar h3 {
+            margin: 0;
+            font-size: 1rem;
+            color: #333;
+        }
+        .table-responsive table th {
+            position: sticky;
+            top: 0;
+            background: #f1f3f5;
+            z-index: 1;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        .badge-count {
+            background: var(--primary-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 6px;
+        }
+        @media (max-width: 600px) {
+            .filter-row {
+                flex-direction: column;
+            }
+            .filter-row .form-group {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="app-header">
+        <button class="nav-toggle" onclick="toggleSidebar()">☰</button>
+        <h1 id="storeNameHeader">Sales Keliling</h1>
+        <div style="width: 30px;"></div>
+    </header>
+
+    <!-- Sidebar -->
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="close-btn" onclick="toggleSidebar()">×</a>
+        <a href="index.html">Dashboard & Profil</a>
+        <a href="customers.html">Pelanggan</a>
+        <a href="suppliers.html">Suplier</a>
+        <a href="products.html">Produk</a>
+        <a href="purchases.html">Pembelian</a>
+        <a href="order.html">Order</a>
+        <a href="payment.html">Pembayaran</a>
+        <a href="debt.html">Rekap Hutang</a>
+        <a href="sales_report.html">Laporan Penjualan</a>
+        <a href="sales_history.html" class="active">Riwayat Per Toko</a>
+        <a href="ranking.html">Ranking Pelanggan</a>
+        <a href="chart.html">Grafik Penjualan</a>
+        <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px;"></div>
+        <a href="#" onclick="logout()" style="color: #ea4335; font-weight: bold;">🚪 Logout</a>
+    </div>
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h2>📋 Riwayat Penjualan Per Toko</h2>
+
+        <!-- Filter Section -->
+        <div class="filter-card">
+            <div class="filter-row">
+                <div class="form-group">
+                    <label for="filterCustomer">Pelanggan / Toko</label>
+                    <select id="filterCustomer" class="form-control">
+                        <option value="">-- Semua Toko --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="filterDateFrom">Dari Tanggal</label>
+                    <input type="date" id="filterDateFrom" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="filterDateTo">Sampai Tanggal</label>
+                    <input type="date" id="filterDateTo" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="filterStatus">Status</label>
+                    <select id="filterStatus" class="form-control">
+                        <option value="">-- Semua --</option>
+                        <option value="Lunas">Lunas</option>
+                        <option value="Belum Lunas">Belum Lunas</option>
+                    </select>
+                </div>
+            </div>
+            <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn-filter" onclick="applyFilter()">🔍 Tampilkan</button>
+                <button class="btn-reset" onclick="resetFilter()">🔄 Reset</button>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-row" id="summaryRow" style="display:none;">
+            <div class="summary-item">
+                <div class="label">Total Transaksi</div>
+                <div class="val" id="sumCount">0</div>
+            </div>
+            <div class="summary-item">
+                <div class="label">Total Order</div>
+                <div class="val" id="sumOrder">Rp 0</div>
+            </div>
+            <div class="summary-item">
+                <div class="label">Sudah Lunas</div>
+                <div class="val green" id="sumLunas">Rp 0</div>
+            </div>
+            <div class="summary-item">
+                <div class="label">Belum Lunas</div>
+                <div class="val red" id="sumBelumLunas">Rp 0</div>
+            </div>
+        </div>
+
+        <!-- Action Bar & Table -->
+        <div class="action-bar" id="actionBar" style="display:none;">
+            <h3>Hasil <span class="badge-count" id="resultCount">0</span></h3>
+            <button class="btn-export" onclick="exportToExcel()">📥 Export Excel</button>
+        </div>
+
+        <div class="table-responsive" id="tableContainer">
+            <div class="empty-state" id="emptyState">
+                <div class="icon">🏪</div>
+                <p>Pilih toko atau filter tanggal, lalu klik <strong>Tampilkan</strong> untuk melihat riwayat penjualan.</p>
+            </div>
+            <table id="historyTable" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Tanggal</th>
+                        <th>Pelanggan</th>
+                        <th>Produk</th>
+                        <th>Qty</th>
+                        <th>Harga</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+    <script src="js/firebase-sync.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/sales_history.js"></script>
+</body>
+</html>
