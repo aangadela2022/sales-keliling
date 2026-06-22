@@ -3,6 +3,28 @@
 document.addEventListener('DOMContentLoaded', () => {
     populateUnpaidCustomersDropdown();
     loadTodayPayments();
+
+    // Auto-select customer from URL query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const customerParam = urlParams.get('customer');
+    if (customerParam) {
+        const select = document.getElementById('searchCustomer');
+        if (select) {
+            let optionExists = false;
+            for (let i = 0; i < select.options.length; i++) {
+                if (select.options[i].value === customerParam) {
+                    select.selectedIndex = i;
+                    optionExists = true;
+                    break;
+                }
+            }
+            if (optionExists) {
+                selectCustomer(customerParam);
+            } else {
+                alert(`Tidak ada tagihan/order belum lunas untuk customer "${customerParam}".`);
+            }
+        }
+    }
 });
 
 function populateUnpaidCustomersDropdown() {

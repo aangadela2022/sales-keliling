@@ -60,7 +60,7 @@
                 <h3>Keuntungan Hari Ini</h3>
                 <div class="value" id="statProfitToday" style="color: var(--success-color);">Rp 0</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card clickable" onclick="showDebtModal()">
                 <h3>Pelanggan Nunggak > 7 Hari</h3>
                 <div class="value" id="statDebtCount" style="color: var(--danger-color);">0</div>
             </div>
@@ -85,6 +85,35 @@
             </form>
         </div>
     </main>
+
+    <!-- Modal Tunggakan > 7 Hari -->
+    <div id="debtModal" class="modal" style="display: none;">
+        <div class="modal-overlay" onclick="closeDebtModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Daftar Tunggakan (> 7 Hari)</h3>
+                <button class="close-modal-btn" onclick="closeDebtModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive" style="box-shadow: none; padding: 0;">
+                    <table class="modal-table">
+                        <thead>
+                            <tr>
+                                <th>Toko</th>
+                                <th>Tanggal</th>
+                                <th>Produk (Qty)</th>
+                                <th>Total</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="debtModalTableBody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="js/firebase-sync.js"></script>
     <script src="js/storage.js"></script>

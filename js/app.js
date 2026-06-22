@@ -189,3 +189,68 @@ async function syncPaymentToSheet(customerName, paymentsArray) {
         console.error("Failed to sync payment:", e);
     }
 }
+
+// Function to show modal with list of unpaid orders > 7 days
+function showDebtModal() {
+    const modal = document.getElementById('debtModal');
+    if (!modal) return;
+    
+    const orders = getData('orders');
+    const tbody = document.getElementById('debtModalTableBody');
+    tbody.innerHTML = '';
+    
+    const todayDate = new Date();
+    const unpaidOrders = orders.filter(order => {
+        if (order.status !== 'Belum Lunas') return false;
+        
+        const orderDate = new Date(order.date);
+        const diffTime = Math.abs(todayDate - orderDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        return diffDays > 7;
+    });
+    
+    if (unpaidOrders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">Tidak ada pelanggan yang menunggak lebih dari 7 hari.</td></tr>';
+    } else {
+        // Sort by oldest date first
+        unpaidOrders.sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+        unpaidOrders.forEach(order => {
+            const tr = document.createElement('tr');
+            
+            // Calculate days ago
+            const orderDate = new Date(order.date);
+            const diffTime = Math.abs(todayDate - orderDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            // Format currency helper (from app.js)
+            const formattedTotal = formatCurrency(order.totalOrder);
+            
+            // Simple date format (DD-MM-YYYY)
+            const parts = order.date.split('-');
+            const displayDate = parts.length === 3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : order.date;
+            
+            tr.innerHTML = `
+                <td><strong>${order.customer}</strong></td>
+                <td>${displayDate} <br><small style="color:#d9534f; font-weight:bold;">(${diffDays} hari lalu)</small></td>
+                <td>${order.product} <br><small style="color:#777;">${order.qty} pcs @ ${formatCurrency(order.price)}</small></td>
+                <td style="color:var(--danger-color); font-weight:bold;">${formattedTotal}</td>
+                <td>
+                    <a href="payment.html?customer=${encodeURIComponent(order.customer)}" class="btn-pay-sm">Bayar</a>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+    
+    modal.style.display = 'flex';
+}
+
+function closeDebtModal() {
+    const modal = document.getElementById('debtModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
